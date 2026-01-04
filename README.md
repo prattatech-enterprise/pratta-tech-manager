@@ -1,0 +1,1 @@
+# pratta-tech-manager
