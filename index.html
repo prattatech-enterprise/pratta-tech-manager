@@ -1,706 +1,1071 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pratta Tech | Sistemas de Gestão para PMEs</title>
+    <title>Pratta Tech Manager</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            purple: '#6c63ff',
-                            dark: '#302f3b',
-                            darker: '#25242e',
-                            light: '#ffffff'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- Babel para entender JSX no navegador -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
-        body {
-            background-color: #302f3b;
-            color: white;
-            scroll-behavior: smooth;
-        }
-
-        /* Gradient Text */
-        .text-gradient {
-            background: linear-gradient(90deg, #fff 0%, #6c63ff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* Glow Effects */
-        .glow-button {
-            box-shadow: 0 0 15px rgba(108, 99, 255, 0.4);
-            transition: all 0.3s ease;
-        }
-        .glow-button:hover {
-            box-shadow: 0 0 25px rgba(108, 99, 255, 0.7);
-            transform: translateY(-2px);
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #302f3b;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #6c63ff;
-            border-radius: 5px;
-        }
-
-        /* Floating Animation for Hero Image */
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-            100% { transform: translateY(0px); }
-        }
-        .animate-float {
-            animation: float 6s ease-in-out infinite;
-        }
-
-        /* Modal Transitions */
-        .modal {
-            transition: opacity 0.3s ease-in-out;
-            opacity: 0;
-            pointer-events: none;
-        }
-        .modal.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
+        /* Ajustes finos de scrollbar e fontes */
+        body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #c7c7c7; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
     </style>
 </head>
-<body class="antialiased overflow-x-hidden">
+<body class="bg-gray-100 text-gray-800">
 
-    <!-- Navigation -->
-    <nav class="fixed w-full z-50 bg-[#302f3b]/90 backdrop-blur-md border-b border-gray-700/30">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
-                <!-- Logo -->
-                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer" onclick="window.scrollTo(0,0)">
-                    <img src="https://res.cloudinary.com/ddkundhsl/image/upload/v1767220328/5_d5neka.png" alt="Pratta Tech" class="h-10 w-auto object-contain" onerror="this.onerror=null; this.src='https://placehold.co/150x50/302f3b/6c63ff?text=PrattaTech';">
-                </div>
+    <div id="root"></div>
 
-                <!-- Desktop Menu -->
-                <div class="hidden md:flex space-x-8 items-center">
-                    <a href="#home" class="text-gray-300 hover:text-brand-purple transition-colors font-medium">Início</a>
-                    <a href="#services" class="text-gray-300 hover:text-brand-purple transition-colors font-medium">Soluções</a>
-                    <a href="#cases" class="text-gray-300 hover:text-brand-purple transition-colors font-medium">Cases</a>
-                    <a href="#about" class="text-gray-300 hover:text-brand-purple transition-colors font-medium">Sobre</a>
-                    <a href="#contact" class="px-6 py-2 bg-brand-purple text-white rounded-full font-semibold glow-button">Fale Conosco</a>
-                </div>
-
-                <!-- Mobile Menu Button -->
-                <div class="md:hidden flex items-center">
-                    <button id="mobile-menu-btn" class="text-white hover:text-brand-purple focus:outline-none">
-                        <i class="fas fa-bars text-2xl"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Mobile Menu Panel -->
-        <div id="mobile-menu" class="hidden md:hidden bg-[#25242e] border-t border-gray-700">
-            <div class="px-4 pt-2 pb-6 space-y-2">
-                <a href="#home" class="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-brand-purple/20 hover:text-brand-purple">Início</a>
-                <a href="#services" class="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-brand-purple/20 hover:text-brand-purple">Soluções</a>
-                <a href="#cases" class="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-brand-purple/20 hover:text-brand-purple">Cases</a>
-                <a href="#about" class="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-brand-purple/20 hover:text-brand-purple">Sobre</a>
-                <a href="#contact" class="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-brand-purple/20 hover:text-brand-purple">Contato</a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section id="home" class="pt-32 pb-20 lg:pt-48 lg:pb-32 relative overflow-hidden">
-        <!-- Background Elements -->
-        <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-brand-purple rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
-        <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
-
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="lg:grid lg:grid-cols-12 lg:gap-16 items-center">
-                <!-- Text Content -->
-                <div class="lg:col-span-6 text-center lg:text-left mb-12 lg:mb-0">
-                    <span class="inline-block py-1 px-3 rounded-full bg-brand-purple/10 border border-brand-purple/30 text-brand-purple text-sm font-semibold mb-6">
-                        Especialistas em Gestão para PMEs
-                    </span>
-                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-                        Sistemas Sob Medida para <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-purple to-purple-400">Decisões Inteligentes</span>
-                    </h1>
-                    <p class="text-gray-300 text-lg mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0">
-                        Facilitamos o dia a dia de gestores com softwares desenvolvidos para a realidade da sua empresa. Fluxos otimizados e relatórios decisivos para você focar no crescimento.
-                    </p>
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                        <a href="#contact" class="px-8 py-4 bg-brand-purple text-white rounded-lg font-bold text-lg glow-button flex items-center justify-center gap-2">
-                            Otimizar minha Gestão <i class="fas fa-arrow-right text-sm"></i>
-                        </a>
-                        <a href="#services" class="px-8 py-4 bg-transparent border border-gray-600 text-white rounded-lg font-bold text-lg hover:bg-white/5 transition-colors flex items-center justify-center">
-                            Conhecer Pacotes
-                        </a>
-                    </div>
-                    
-                    <!-- Differentiators (Key Selling Points) -->
-                    <div class="mt-10 space-y-4 max-w-lg mx-auto lg:mx-0">
-                        <div class="flex items-start gap-3">
-                            <div class="w-6 h-6 rounded-full bg-brand-purple/20 flex items-center justify-center text-brand-purple shrink-0 border border-brand-purple/30 mt-1">
-                                <i class="fas fa-check text-xs"></i>
-                            </div>
-                            <span class="text-gray-300 font-medium leading-relaxed">Sistemas 100% aderentes aos seus processos (sem "gambiarras")</span>
-                        </div>
-                        <div class="flex items-start gap-3">
-                            <div class="w-6 h-6 rounded-full bg-brand-purple/20 flex items-center justify-center text-brand-purple shrink-0 border border-brand-purple/30 mt-1">
-                                <i class="fas fa-check text-xs"></i>
-                            </div>
-                            <span class="text-gray-300 font-medium leading-relaxed">Dashboards gerenciais focados em tomada de decisão</span>
-                        </div>
-                        <div class="flex items-start gap-3">
-                            <div class="w-6 h-6 rounded-full bg-brand-purple/20 flex items-center justify-center text-brand-purple shrink-0 border border-brand-purple/30 mt-1">
-                                <i class="fas fa-check text-xs"></i>
-                            </div>
-                            <span class="text-gray-300 font-medium leading-relaxed">Automatização de tarefas repetitivas do dia a dia</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Hero Visual (SVG/Illustration placeholder) -->
-                <div class="lg:col-span-6 relative animate-float">
-                    <div class="relative rounded-2xl bg-gradient-to-tr from-[#25242e] to-[#3a3947] border border-gray-700 p-6 shadow-2xl">
-                        <!-- Simulated App Interface Header -->
-                        <div class="flex items-center justify-between mb-6 bg-[#302f3b] p-2 rounded-lg border border-gray-600/50">
-                            <!-- Window Controls -->
-                            <div class="flex items-center gap-2">
-                                <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                                <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-                                <div class="w-3 h-3 rounded-full bg-green-500"></div>
-                            </div>
-                            <!-- Performance Badge (Relocated) -->
-                            <div class="flex items-center gap-2 bg-green-500/10 px-3 py-1 rounded-full border border-green-500/20">
-                                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                                <span class="text-[10px] font-bold text-green-400 uppercase tracking-wide">Performance Otimizada</span>
-                            </div>
-                        </div>
-                        
-                        <!-- Big Numbers Grid -->
-                        <div class="grid grid-cols-2 gap-4 mb-4">
-                            <!-- Stat Card 1 -->
-                            <div class="bg-[#302f3b]/80 p-4 rounded-xl border border-gray-600 backdrop-blur-sm">
-                                <div class="flex items-start justify-between mb-2">
-                                    <div class="p-2 bg-brand-purple/20 rounded-lg text-brand-purple">
-                                        <i class="fas fa-cogs"></i>
-                                    </div>
-                                    <span class="text-green-400 text-xs font-bold bg-green-400/10 px-2 py-1 rounded">-40h</span>
-                                </div>
-                                <p class="text-gray-400 text-xs mb-1">Tempo Operacional</p>
-                                <p class="text-xl font-bold text-white">Processos Ágeis</p>
-                            </div>
-
-                            <!-- Stat Card 2 -->
-                            <div class="bg-[#302f3b]/80 p-4 rounded-xl border border-gray-600 backdrop-blur-sm">
-                                <div class="flex items-start justify-between mb-2">
-                                    <div class="p-2 bg-blue-500/20 rounded-lg text-blue-400">
-                                        <i class="fas fa-chart-pie"></i>
-                                    </div>
-                                </div>
-                                <p class="text-gray-400 text-xs mb-1">Visão Gerencial</p>
-                                <p class="text-xl font-bold text-white">Relatórios em 1-Click</p>
-                            </div>
-                        </div>
-
-                        <!-- Main Big Number Area -->
-                        <div class="bg-[#302f3b]/80 p-5 rounded-xl border border-gray-600 mb-2 backdrop-blur-sm">
-                            <div class="flex justify-between items-end mb-2">
-                                <div>
-                                    <p class="text-gray-400 text-xs mb-1">Eficiência da Gestão</p>
-                                    <p class="text-3xl lg:text-4xl font-bold text-white tracking-tight">100% Controle</p>
-                                </div>
-                                <div class="h-8 w-8 rounded-full border-2 border-green-500 flex items-center justify-center">
-                                    <i class="fas fa-arrow-up text-green-500 text-xs transform rotate-45"></i>
-                                </div>
-                            </div>
-                            <!-- Fake Chart Bar -->
-                            <div class="w-full bg-gray-700 h-1.5 rounded-full overflow-hidden flex">
-                                <div class="bg-brand-purple h-full w-[30%]"></div>
-                                <div class="bg-blue-500 h-full w-[20%]"></div>
-                                <div class="bg-green-500 h-full w-[35%]"></div>
-                            </div>
-                            <div class="flex justify-between text-[10px] text-gray-500 mt-2">
-                                <span>Fin</span>
-                                <span>Com</span>
-                                <span>Op</span>
-                                <span>RH</span>
-                                <span>Mkt</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Services Section -->
-    <section id="services" class="py-20 bg-[#25242e]">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4">Nossos Pacotes de <span class="text-brand-purple">Soluções</span></h2>
-                <p class="text-gray-400 max-w-2xl mx-auto">Tecnologia estratégica para organizar a casa, vender mais e tomar decisões seguras. Escolha o foco ideal para o momento da sua PME.</p>
-            </div>
-
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Card 1: Gestão Integrada -->
-                <div class="bg-[#302f3b] p-8 rounded-2xl hover:bg-[#353441] transition-all duration-300 hover:-translate-y-2 border border-transparent hover:border-brand-purple/30 group">
-                    <div class="w-14 h-14 bg-brand-purple/10 rounded-xl flex items-center justify-center text-brand-purple mb-6 group-hover:bg-brand-purple group-hover:text-white transition-colors">
-                        <i class="fas fa-project-diagram text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3">ERP Sob Medida</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed mb-4">Centralize toda a operação da sua empresa.</p>
-                    <ul class="text-sm text-gray-300 space-y-2">
-                        <li class="flex items-center gap-2"><i class="fas fa-check text-brand-purple text-xs"></i> Controle Financeiro & Fiscal</li>
-                        <li class="flex items-center gap-2"><i class="fas fa-check text-brand-purple text-xs"></i> Gestão de Estoque Inteligente</li>
-                        <li class="flex items-center gap-2"><i class="fas fa-check text-brand-purple text-xs"></i> Fluxos de Aprovação Personalizados</li>
-                    </ul>
-                </div>
-
-                <!-- Card 2: Vendas (CRM) -->
-                <div class="bg-[#302f3b] p-8 rounded-2xl hover:bg-[#353441] transition-all duration-300 hover:-translate-y-2 border border-transparent hover:border-brand-purple/30 group">
-                    <div class="w-14 h-14 bg-brand-purple/10 rounded-xl flex items-center justify-center text-brand-purple mb-6 group-hover:bg-brand-purple group-hover:text-white transition-colors">
-                        <i class="fas fa-funnel-dollar text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3">CRM & Aceleração de Vendas</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed mb-4">Organize seu comercial e pare de perder oportunidades.</p>
-                    <ul class="text-sm text-gray-300 space-y-2">
-                        <li class="flex items-center gap-2"><i class="fas fa-check text-brand-purple text-xs"></i> Pipelines de Vendas Visuais</li>
-                        <li class="flex items-center gap-2"><i class="fas fa-check text-brand-purple text-xs"></i> Automação de Propostas e Contratos</li>
-                        <li class="flex items-center gap-2"><i class="fas fa-check text-brand-purple text-xs"></i> Histórico Completo de Clientes</li>
-                    </ul>
-                </div>
-
-                <!-- Card 3: BI & Relatórios -->
-                <div class="bg-[#302f3b] p-8 rounded-2xl hover:bg-[#353441] transition-all duration-300 hover:-translate-y-2 border border-transparent hover:border-brand-purple/30 group">
-                    <div class="w-14 h-14 bg-brand-purple/10 rounded-xl flex items-center justify-center text-brand-purple mb-6 group-hover:bg-brand-purple group-hover:text-white transition-colors">
-                        <i class="fas fa-chart-bar text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3">Dashboards & BI</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed mb-4">Transforme dados brutos em decisões estratégicas.</p>
-                    <ul class="text-sm text-gray-300 space-y-2">
-                        <li class="flex items-center gap-2"><i class="fas fa-check text-brand-purple text-xs"></i> Painéis Gerenciais em Tempo Real</li>
-                        <li class="flex items-center gap-2"><i class="fas fa-check text-brand-purple text-xs"></i> Indicadores de Desempenho (KPIs)</li>
-                        <li class="flex items-center gap-2"><i class="fas fa-check text-brand-purple text-xs"></i> Relatórios Automatizados por E-mail</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Why Us / Features -->
-    <section id="about" class="py-20 relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="lg:grid lg:grid-cols-2 gap-16 items-center">
-                <div class="mb-12 lg:mb-0">
-                    <img src="https://res.cloudinary.com/ddkundhsl/image/upload/v1767220708/Post_Instagram_-_Pratta_Tech_vr7mgt.png" alt="Pratta Tech Destaques" class="rounded-2xl shadow-2xl border border-gray-700 w-full object-cover transform hover:scale-[1.02] transition-transform duration-500">
-                </div>
-                <div>
-                    <h2 class="text-3xl md:text-4xl font-bold mb-6">Por que escolher a <span class="text-brand-purple">Pratta Tech</span>?</h2>
-                    <p class="text-gray-300 mb-8">Entendemos as dores de crescimento de uma PME. Não entregamos apenas código; entregamos processos otimizados que permitem ao gestor focar no que realmente importa.</p>
-
-                    <div class="space-y-6">
-                        <div class="flex gap-4">
-                            <div class="flex-shrink-0 w-12 h-12 bg-[#25242e] rounded-full flex items-center justify-center border border-gray-700 text-brand-purple">
-                                <i class="fas fa-tasks"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-lg">Foco no Dia a Dia do Gestor</h4>
-                                <p class="text-gray-400 text-sm">Interfaces limpas e relatórios diretos para quem precisa tomar decisões rápidas.</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-4">
-                            <div class="flex-shrink-0 w-12 h-12 bg-[#25242e] rounded-full flex items-center justify-center border border-gray-700 text-brand-purple">
-                                <i class="fas fa-layer-group"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-lg">Integração Total</h4>
-                                <p class="text-gray-400 text-sm">Conectamos financeiro, vendas e estoque para eliminar retrabalho e planilhas soltas.</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-4">
-                            <div class="flex-shrink-0 w-12 h-12 bg-[#25242e] rounded-full flex items-center justify-center border border-gray-700 text-brand-purple">
-                                <i class="fas fa-headset"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-lg">Parceria de Longo Prazo</h4>
-                                <p class="text-gray-400 text-sm">Acompanhamos a evolução do seu negócio, ajustando o sistema conforme você cresce.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- NEW SECTION: Cases de Sucesso -->
-    <section id="cases" class="py-20 bg-[#25242e] relative overflow-hidden">
-        <!-- Decor element -->
-        <div class="absolute left-0 top-0 w-full h-1 bg-gradient-to-r from-transparent via-brand-purple/30 to-transparent"></div>
+    <script type="text/babel" data-type="module">
+        import React, { useState, useEffect, useMemo } from 'https://esm.sh/react@18.2.0';
+        import { createRoot } from 'https://esm.sh/react-dom@18.2.0/client';
+        import { 
+            LayoutDashboard, Users, Briefcase, Receipt, Settings, Plus, 
+            Github, FileText, ExternalLink, MoreVertical, Trash2, X, 
+            DollarSign, Code, AlertCircle, LogOut, Lock, ScrollText, Calendar,
+            Edit2, TrendingUp, TrendingDown, ArrowRight, Filter, Repeat,
+            ChevronLeft, ChevronRight, CheckSquare, Square, Check
+        } from 'https://esm.sh/lucide-react@0.300.0';
         
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="text-center mb-16">
-                <span class="text-brand-purple font-semibold tracking-wider text-sm uppercase">Nossos Projetos</span>
-                <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4">Cases de <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-purple to-white">Sucesso Real</span></h2>
-                <p class="text-gray-400 max-w-2xl mx-auto">Veja como nossas soluções sob medida destravaram o crescimento de outras PMEs.</p>
-            </div>
+        // Importação Firebase
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { 
+            getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged 
+        } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+        import { 
+            getFirestore, collection, addDoc, deleteDoc, updateDoc, doc, onSnapshot, 
+            query, orderBy, serverTimestamp 
+        } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 
-            <div class="grid md:grid-cols-3 gap-8">
-                <!-- Case Card 1 -->
-                <div class="bg-[#302f3b] rounded-2xl overflow-hidden border border-gray-700 hover:border-brand-purple/50 transition-all duration-300 hover:-translate-y-2 group">
-                    <div class="h-48 overflow-hidden relative">
-                        <div class="absolute inset-0 bg-brand-purple/10 group-hover:bg-transparent transition-colors z-10"></div>
-                        <img src="https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="E-commerce Project" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500">
-                    </div>
-                    <div class="p-6">
-                        <div class="flex gap-2 mb-4">
-                            <span class="text-[10px] font-bold uppercase tracking-wider bg-brand-purple/20 text-brand-purple px-2 py-1 rounded">Varejo</span>
-                            <span class="text-[10px] font-bold uppercase tracking-wider bg-gray-700 text-gray-300 px-2 py-1 rounded">ERP</span>
-                        </div>
-                        <h3 class="text-xl font-bold mb-2">Fashion Retail Pro</h3>
-                        <p class="text-gray-400 text-sm mb-6">Centralização de estoque físico e online com emissão automática de NF.</p>
-                        
-                        <!-- Big Numbers -->
-                        <div class="grid grid-cols-2 gap-4 bg-[#25242e] rounded-xl p-4">
-                            <div>
-                                <p class="text-lg font-bold text-green-400">+150%</p>
-                                <p class="text-[10px] text-gray-500 uppercase">Eficiência Op.</p>
-                            </div>
-                            <div>
-                                <p class="text-lg font-bold text-white">Zero</p>
-                                <p class="text-[10px] text-gray-500 uppercase">Erros de Estoque</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Case Card 2 -->
-                <div class="bg-[#302f3b] rounded-2xl overflow-hidden border border-gray-700 hover:border-brand-purple/50 transition-all duration-300 hover:-translate-y-2 group">
-                    <div class="h-48 overflow-hidden relative">
-                        <div class="absolute inset-0 bg-brand-purple/10 group-hover:bg-transparent transition-colors z-10"></div>
-                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Fintech Project" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500">
-                    </div>
-                    <div class="p-6">
-                        <div class="flex gap-2 mb-4">
-                            <span class="text-[10px] font-bold uppercase tracking-wider bg-brand-purple/20 text-brand-purple px-2 py-1 rounded">Serviços</span>
-                            <span class="text-[10px] font-bold uppercase tracking-wider bg-gray-700 text-gray-300 px-2 py-1 rounded">BI</span>
-                        </div>
-                        <h3 class="text-xl font-bold mb-2">Consultoria Dash</h3>
-                        <p class="text-gray-400 text-sm mb-6">Painel financeiro para acompanhamento de margem de lucro por projeto.</p>
-                        
-                        <!-- Big Numbers -->
-                        <div class="grid grid-cols-2 gap-4 bg-[#25242e] rounded-xl p-4">
-                            <div>
-                                <p class="text-lg font-bold text-brand-purple">100%</p>
-                                <p class="text-[10px] text-gray-500 uppercase">Visibilidade</p>
-                            </div>
-                            <div>
-                                <p class="text-lg font-bold text-white">2x</p>
-                                <p class="text-[10px] text-gray-500 uppercase">Rapidez Decisória</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Case Card 3 -->
-                <div class="bg-[#302f3b] rounded-2xl overflow-hidden border border-gray-700 hover:border-brand-purple/50 transition-all duration-300 hover:-translate-y-2 group">
-                    <div class="h-48 overflow-hidden relative">
-                        <div class="absolute inset-0 bg-brand-purple/10 group-hover:bg-transparent transition-colors z-10"></div>
-                        <img src="https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="App Project" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500">
-                    </div>
-                    <div class="p-6">
-                        <div class="flex gap-2 mb-4">
-                            <span class="text-[10px] font-bold uppercase tracking-wider bg-brand-purple/20 text-brand-purple px-2 py-1 rounded">Logística</span>
-                            <span class="text-[10px] font-bold uppercase tracking-wider bg-gray-700 text-gray-300 px-2 py-1 rounded">App</span>
-                        </div>
-                        <h3 class="text-xl font-bold mb-2">LogiTrack App</h3>
-                        <p class="text-gray-400 text-sm mb-6">Sistema de gestão de frotas e entregas para distribuidora regional.</p>
-                        
-                        <!-- Big Numbers -->
-                        <div class="grid grid-cols-2 gap-4 bg-[#25242e] rounded-xl p-4">
-                            <div>
-                                <p class="text-lg font-bold text-green-400">-30%</p>
-                                <p class="text-[10px] text-gray-500 uppercase">Custos Operacionais</p>
-                            </div>
-                            <div>
-                                <p class="text-lg font-bold text-white">Total</p>
-                                <p class="text-[10px] text-gray-500 uppercase">Rastreabilidade</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA / Contact Section -->
-    <section id="contact" class="py-20 bg-gradient-to-br from-[#25242e] to-[#302f3b]">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="bg-[#302f3b] rounded-3xl p-8 md:p-12 border border-gray-700 shadow-2xl relative overflow-hidden">
-                <!-- Decorative circle -->
-                <div class="absolute top-0 right-0 w-64 h-64 bg-brand-purple/10 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none"></div>
-                
-                <!-- Fix 3: Explicit grid columns for mobile (grid-cols-1) and ensured items-start -->
-                <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
-                    
-                    <!-- Option 1: Email Direct -->
-                    <div class="flex flex-col justify-center text-center lg:text-left">
-                        <div class="w-16 h-16 bg-brand-purple/20 rounded-2xl flex items-center justify-center text-brand-purple text-2xl mb-6 mx-auto lg:mx-0">
-                            <i class="fas fa-envelope-open-text"></i>
-                        </div>
-                        <h2 class="text-3xl font-bold mb-4">Vamos otimizar sua gestão?</h2>
-                        <p class="text-gray-400 mb-8">Conte seus desafios atuais. Estamos prontos para desenhar a solução ideal para sua PME.</p>
-                        
-                        <!-- Added a bit more contrast and spacing for mobile visibility -->
-                        <div class="bg-[#25242e] p-6 rounded-2xl border border-gray-600 mb-6 group hover:border-brand-purple transition-all duration-300 shadow-md">
-                            <p class="text-sm text-gray-400 mb-2 font-medium">Opção 1: E-mail Direto</p>
-                            <a href="mailto:prattatech@gmail.com" class="text-xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-300 hover:to-brand-purple transition-all break-all block py-1">
-                                prattatech@gmail.com
-                            </a>
-                            <p class="text-gray-500 text-sm mt-4 leading-relaxed">
-                                Prefere detalhar suas necessidades e anexar documentos? Envie um e-mail tradicional e nossa equipe técnica analisará sua demanda.
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Option 2: WhatsApp Form -->
-                    <div class="bg-[#25242e]/50 backdrop-blur-sm p-6 md:p-8 rounded-2xl border border-gray-600">
-                        <div class="mb-6 flex items-center gap-3">
-                            <div class="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center text-green-500">
-                                <i class="fab fa-whatsapp text-xl"></i>
-                            </div>
-                            <h3 class="text-xl font-bold">Opção 2: Agilidade via WhatsApp</h3>
-                        </div>
-                        
-                        <form class="space-y-4" onsubmit="sendToWhatsapp(event)">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-400 mb-1.5">Nome</label>
-                                <input type="text" name="nome" class="w-full bg-[#302f3b] border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-purple focus:ring-1 focus:ring-brand-purple transition-colors placeholder-gray-600" placeholder="Seu nome" required>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-400 mb-1.5">Email</label>
-                                <input type="email" name="email" class="w-full bg-[#302f3b] border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-purple focus:ring-1 focus:ring-brand-purple transition-colors placeholder-gray-600" placeholder="seu@email.com" required>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-400 mb-1.5">Sobre sua Empresa/Desafio</label>
-                                <textarea name="mensagem" rows="3" class="w-full bg-[#302f3b] border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-purple focus:ring-1 focus:ring-brand-purple transition-colors placeholder-gray-600" placeholder="Ex: Preciso organizar meu financeiro e estoque..." required></textarea>
-                            </div>
-                            <button type="submit" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3.5 rounded-lg shadow-lg hover:shadow-green-500/30 transition-all flex items-center justify-center gap-2 mt-2">
-                                <i class="fab fa-whatsapp text-xl"></i> Iniciar Conversa
-                            </button>
-                        </form>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-[#1f1e26] pt-12 pb-6 border-t border-gray-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid md:grid-cols-4 gap-8 mb-8">
-                <div class="col-span-1 md:col-span-2">
-                    <div class="mb-4">
-                        <img src="https://res.cloudinary.com/ddkundhsl/image/upload/v1767220328/5_d5neka.png" alt="Pratta Tech" class="h-8 w-auto object-contain" onerror="this.onerror=null; this.src='https://placehold.co/120x40/1f1e26/6c63ff?text=PrattaTech';">
-                    </div>
-                    <p class="text-gray-500 text-sm max-w-xs">
-                        Tecnologia estratégica para o crescimento de Pequenas e Médias Empresas. Gestão, Processos e Resultados.
-                    </p>
-                </div>
-                
-                <div>
-                    <h4 class="text-white font-bold mb-4">Links Rápidos</h4>
-                    <ul class="space-y-2 text-sm text-gray-500">
-                        <li><a href="#home" class="hover:text-brand-purple transition-colors">Início</a></li>
-                        <li><a href="#services" class="hover:text-brand-purple transition-colors">Soluções</a></li>
-                        <li><a href="#about" class="hover:text-brand-purple transition-colors">Sobre Nós</a></li>
-                        <li><a href="#contact" class="hover:text-brand-purple transition-colors">Contato</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h4 class="text-white font-bold mb-4">Social</h4>
-                    <div class="flex flex-col gap-4">
-                        <a href="https://www.instagram.com/pratta.tech/" target="_blank" class="w-10 h-10 rounded-full bg-[#302f3b] flex items-center justify-center text-gray-400 hover:text-white hover:bg-brand-purple transition-all self-start">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a href="mailto:prattatech@gmail.com" class="text-gray-400 hover:text-brand-purple transition-colors text-sm hover:underline">
-                            prattatech@gmail.com
-                        </a>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="border-t border-gray-800 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
-                <p class="text-gray-600 text-sm text-center md:text-left">
-                    &copy; 2024 Pratta Tech. Todos os direitos reservados.
-                </p>
-                <div class="text-gray-600 text-sm flex gap-4">
-                    <button onclick="openModal('privacyModal')" class="hover:text-gray-400 transition-colors">Privacidade</button>
-                    <button onclick="openModal('termsModal')" class="hover:text-gray-400 transition-colors">Termos</button>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Privacy Modal -->
-    <div id="privacyModal" class="modal fixed inset-0 z-[60] flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal('privacyModal')"></div>
-        <div class="bg-[#25242e] rounded-2xl p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto relative border border-gray-700 shadow-2xl">
-            <button onclick="closeModal('privacyModal')" class="absolute top-4 right-4 text-gray-400 hover:text-white">
-                <i class="fas fa-times text-xl"></i>
-            </button>
-            <h2 class="text-2xl font-bold mb-6 text-white">Política de Privacidade</h2>
-            <div class="space-y-4 text-gray-300 text-sm leading-relaxed">
-                <p><strong>1. Introdução</strong><br>A Pratta Tech valoriza sua privacidade. Esta política descreve como coletamos, usamos e protegemos suas informações pessoais ao utilizar nosso site e serviços.</p>
-                <p><strong>2. Coleta de Dados</strong><br>Coletamos informações que você nos fornece voluntariamente, como nome, e-mail e detalhes do projeto através do formulário de contato. Também podemos coletar dados anônimos de navegação para melhorar a experiência do usuário.</p>
-                <p><strong>3. Uso das Informações</strong><br>Utilizamos seus dados exclusivamente para: responder a solicitações, enviar orçamentos, melhorar nossos serviços e, ocasionalmente, enviar atualizações sobre a Pratta Tech (caso tenha consentido).</p>
-                <p><strong>4. Compartilhamento de Dados</strong><br>Não vendemos, alugamos ou compartilhamos suas informações pessoais com terceiros, exceto quando exigido por lei ou necessário para a prestação de serviços contratados.</p>
-                <p><strong>5. Segurança</strong><br>Implementamos medidas de segurança técnicas e organizacionais para proteger seus dados contra acesso não autorizado, alteração ou destruição.</p>
-                <p><strong>6. Contato</strong><br>Para dúvidas sobre esta política, entre em contato através do e-mail: prattatech@gmail.com.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Terms Modal -->
-    <div id="termsModal" class="modal fixed inset-0 z-[60] flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal('termsModal')"></div>
-        <div class="bg-[#25242e] rounded-2xl p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto relative border border-gray-700 shadow-2xl">
-            <button onclick="closeModal('termsModal')" class="absolute top-4 right-4 text-gray-400 hover:text-white">
-                <i class="fas fa-times text-xl"></i>
-            </button>
-            <h2 class="text-2xl font-bold mb-6 text-white">Termos de Uso</h2>
-            <div class="space-y-4 text-gray-300 text-sm leading-relaxed">
-                <p><strong>1. Aceitação dos Termos</strong><br>Ao acessar e utilizar o site da Pratta Tech, você concorda em cumprir estes Termos de Uso e todas as leis aplicáveis.</p>
-                <p><strong>2. Propriedade Intelectual</strong><br>Todo o conteúdo deste site, incluindo textos, gráficos, logotipos e códigos, é propriedade da Pratta Tech e está protegido por leis de direitos autorais.</p>
-                <p><strong>3. Uso do Site</strong><br>Você concorda em não utilizar este site para fins ilegais ou proibidos. É vedada a tentativa de violar a segurança do site ou acessar áreas restritas sem autorização.</p>
-                <p><strong>4. Limitação de Responsabilidade</strong><br>A Pratta Tech não se responsabiliza por danos diretos ou indiretos decorrentes do uso ou da impossibilidade de uso deste site ou de seus serviços.</p>
-                <p><strong>5. Modificações</strong><br>Reservamo-nos o direito de alterar estes termos a qualquer momento. O uso contínuo do site após as alterações constitui aceitação dos novos termos.</p>
-                <p><strong>6. Foro</strong><br>Fica eleito o foro da comarca da sede da empresa para dirimir quaisquer dúvidas oriundas destes termos.</p>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // WhatsApp Form Handler
-        function sendToWhatsapp(event) {
-            event.preventDefault();
-            
-            const nome = document.querySelector('input[name="nome"]').value;
-            const email = document.querySelector('input[name="email"]').value;
-            const mensagem = document.querySelector('textarea[name="mensagem"]').value;
-            
-            // Format: Country Code (55) + Area Code (11) + Number (932911924)
-            const phoneNumber = "5511932911924";
-            
-            // Create formatted, well-elaborated message
-            // Using %0A for line breaks in the URL structure
-            const text = `👋 *Olá, Pratta Tech!*\n\n` +
-                         `Meu nome é *${nome}* e estou visitando o site.\n\n` +
-                         `🚀 *Tenho interesse em soluções de gestão.*\n` +
-                         `Aqui estão meus detalhes:\n\n` +
-                         `📧 *Email:* ${email}\n` +
-                         `📝 *Minha necessidade:* \n${mensagem}\n\n` +
-                         `Gostaria de saber como vocês podem ajudar minha PME. Obrigado(a).`;
-            
-            // Encode for URL
-            const encodedText = encodeURIComponent(text);
-            
-            // Open WhatsApp
-            window.open(`https://wa.me/${phoneNumber}?text=${encodedText}`, '_blank');
-        }
-
-        // Modal Functions
-        function openModal(modalId) {
-            const modal = document.getElementById(modalId);
-            modal.classList.remove('hidden');
-            // Small delay to allow display:block to apply before opacity transition
-            setTimeout(() => {
-                modal.classList.add('active');
-            }, 10);
-            document.body.style.overflow = 'hidden'; // Prevent scrolling background
-        }
-
-        function closeModal(modalId) {
-            const modal = document.getElementById(modalId);
-            modal.classList.remove('active');
-            setTimeout(() => {
-                modal.classList.add('hidden'); // Use CSS class if you want to fully hide it after transition
-                // Or just rely on pointer-events: none from CSS
-            }, 300);
-            document.body.style.overflow = 'auto'; // Restore scrolling
-        }
-
-        // Initialize modals as hidden (optional if CSS handles it perfectly, but safer)
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.modal').forEach(modal => {
-                modal.classList.add('hidden');
-            });
-        });
-
-
-        // Mobile Menu Toggle
-        const btn = document.getElementById('mobile-menu-btn');
-        const menu = document.getElementById('mobile-menu');
-
-        btn.addEventListener('click', () => {
-            menu.classList.toggle('hidden');
-        });
-
-        // Close mobile menu when clicking a link
-        document.querySelectorAll('#mobile-menu a').forEach(link => {
-            link.addEventListener('click', () => {
-                menu.classList.add('hidden');
-            });
-        });
-
-        // Simple Fade In on Scroll
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.1
+        // --- Configuração do Firebase ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyAylp84YfYnV7OkfBM0dsRrjKD9UZCRSEQ",
+            authDomain: "pratta-tech.firebaseapp.com",
+            projectId: "pratta-tech",
+            storageBucket: "pratta-tech.firebasestorage.app",
+            messagingSenderId: "506757978832",
+            appId: "1:506757978832:web:9bf3321d6783073b5edcd5"
         };
 
-        const observer = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('opacity-100', 'translate-y-0');
-                    entry.target.classList.remove('opacity-0', 'translate-y-10');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = 'pratta-tech-public';
 
-        document.querySelectorAll('section > div').forEach((section) => {
-            section.classList.add('transition-all', 'duration-1000', 'opacity-0', 'translate-y-10');
-            observer.observe(section);
-        });
+        // --- Componentes UI Reutilizáveis ---
+
+        const Card = ({ children, className = "" }) => (
+            <div className={`bg-white rounded-xl shadow-sm border border-gray-100 p-6 ${className}`}>
+                {children}
+            </div>
+        );
+
+        const Badge = ({ children, type = "neutral" }) => {
+            const styles = {
+                neutral: "bg-gray-100 text-gray-600",
+                success: "bg-emerald-100 text-emerald-700",
+                warning: "bg-amber-100 text-amber-700",
+                danger: "bg-rose-100 text-rose-700",
+                info: "bg-blue-100 text-blue-700",
+                tech: "bg-indigo-100 text-indigo-700"
+            };
+            return (
+                <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${styles[type] || styles.neutral}`}>
+                    {children}
+                </span>
+            );
+        };
+
+        const Button = ({ children, onClick, variant = "primary", icon: Icon, className = "", type="button" }) => {
+            const baseStyle = "flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 text-sm";
+            const variants = {
+                primary: "bg-indigo-600 text-white hover:bg-indigo-700 shadow-md shadow-indigo-200",
+                secondary: "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50",
+                danger: "bg-rose-50 text-rose-600 hover:bg-rose-100",
+                ghost: "text-gray-500 hover:bg-gray-100 hover:text-gray-900",
+                success: "bg-emerald-600 text-white hover:bg-emerald-700 shadow-md shadow-emerald-200"
+            };
+
+            return (
+                <button type={type} onClick={onClick} className={`${baseStyle} ${variants[variant]} ${className}`}>
+                    {Icon && <Icon size={16} />}
+                    {children}
+                </button>
+            );
+        };
+
+        const Modal = ({ isOpen, onClose, title, children }) => {
+            if (!isOpen) return null;
+            return (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+                    <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl animate-in fade-in zoom-in duration-200">
+                        <div className="flex justify-between items-center p-6 border-b border-gray-100">
+                            <h3 className="text-xl font-semibold text-gray-800">{title}</h3>
+                            <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+                                <X size={24} />
+                            </button>
+                        </div>
+                        <div className="p-6 max-h-[80vh] overflow-y-auto">
+                            {children}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const LoginView = ({ onLoginSuccess }) => {
+            const [email, setEmail] = useState('');
+            const [password, setPassword] = useState('');
+            const [error, setError] = useState('');
+            const [loading, setLoading] = useState(false);
+
+            const handleLogin = async (e) => {
+                e.preventDefault();
+                setLoading(true);
+                setError('');
+                try {
+                    await signInWithEmailAndPassword(auth, email, password);
+                } catch (err) {
+                    console.error(err);
+                    setError('Falha no login. Verifique suas credenciais.');
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            return (
+                <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
+                    <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
+                        <div className="flex flex-col items-center mb-8">
+                            <div className="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-indigo-200">
+                                <Code size={28} className="text-white" />
+                            </div>
+                            <h1 className="text-2xl font-bold text-gray-900">Pratta Tech</h1>
+                            <p className="text-gray-500">Sistema de Gestão</p>
+                        </div>
+
+                        {error && (
+                            <div className="mb-4 p-3 bg-red-50 text-red-700 text-sm rounded-lg flex items-center gap-2">
+                                <AlertCircle size={16} />
+                                {error}
+                            </div>
+                        )}
+
+                        <form onSubmit={handleLogin} className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">E-mail</label>
+                                <input 
+                                    type="email" 
+                                    required 
+                                    className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                                    placeholder="admin@prattatech.com"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Senha</label>
+                                <input 
+                                    type="password" 
+                                    required 
+                                    className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                                    placeholder="••••••••"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
+                            </div>
+                            <Button type="submit" className="w-full py-3" icon={Lock}>
+                                {loading ? 'Entrando...' : 'Acessar Sistema'}
+                            </Button>
+                        </form>
+                    </div>
+                </div>
+            );
+        };
+
+        // --- Views do Sistema ---
+
+        const DashboardView = ({ clients, projects }) => {
+            const activeProjects = projects.filter(p => p.status === 'Em Andamento').length;
+            const totalClients = clients.length;
+            const totalImplementation = projects.reduce((acc, curr) => acc + (parseFloat(curr.implementationValue) || 0), 0);
+            const totalMRR = projects
+                .filter(p => p.status === 'Em Andamento' || p.status === 'Concluído')
+                .reduce((acc, curr) => acc + (parseFloat(curr.monthlyValue) || 0), 0);
+            const pendingDocs = projects.filter(p => !p.docsUrl).length;
+
+            return (
+                <div className="space-y-6">
+                    <header className="mb-8">
+                        <h1 className="text-2xl font-bold text-gray-800">Visão Geral</h1>
+                        <p className="text-gray-500">Acompanhamento financeiro e operacional.</p>
+                    </header>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <Card className="border-l-4 border-l-indigo-500">
+                            <div>
+                                <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Implementação Total</p>
+                                <h3 className="text-2xl font-bold text-gray-900 mt-1">
+                                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalImplementation)}
+                                </h3>
+                                <p className="text-xs text-indigo-600 mt-1 font-medium">Acumulado</p>
+                            </div>
+                        </Card>
+                        <Card className="border-l-4 border-l-emerald-500">
+                            <div>
+                                <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Receita Mensal (MRR)</p>
+                                <h3 className="text-2xl font-bold text-gray-900 mt-1">
+                                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalMRR)}
+                                </h3>
+                                <p className="text-xs text-emerald-600 mt-1 font-medium">Recorrente</p>
+                            </div>
+                        </Card>
+                        <Card className="border-l-4 border-l-blue-500">
+                            <div>
+                                <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Clientes Ativos</p>
+                                <h3 className="text-2xl font-bold text-gray-900 mt-1">{totalClients}</h3>
+                            </div>
+                        </Card>
+                        <Card className="border-l-4 border-l-amber-500">
+                            <div>
+                                <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Pendências (Docs)</p>
+                                <h3 className="text-2xl font-bold text-gray-900 mt-1">{pendingDocs}</h3>
+                            </div>
+                        </Card>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-6">
+                         <Card>
+                            <h3 className="font-semibold text-gray-800 mb-4">Projetos Recentes</h3>
+                            <div className="space-y-4">
+                                {projects.slice(0, 5).map(project => (
+                                    <div key={project.id} className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors border border-gray-100">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-sm">
+                                                {project.name.substring(0, 2).toUpperCase()}
+                                            </div>
+                                            <div>
+                                                <h4 className="font-medium text-gray-900">{project.name}</h4>
+                                                <span className="text-xs text-gray-500">{clients.find(c => c.id === project.clientId)?.name || 'Cliente Removido'}</span>
+                                            </div>
+                                        </div>
+                                        <Badge type={project.status === 'Concluído' ? 'success' : project.status === 'Em Andamento' ? 'info' : 'warning'}>
+                                            {project.status}
+                                        </Badge>
+                                    </div>
+                                ))}
+                                {projects.length === 0 && <p className="text-gray-400 text-sm text-center py-4">Nenhum projeto cadastrado.</p>}
+                            </div>
+                        </Card>
+                    </div>
+                </div>
+            );
+        };
+
+        const CalendarView = ({ notes, onAddNote, onUpdateNote, onDeleteNote }) => {
+            const [currentDate, setCurrentDate] = useState(new Date());
+            const [selectedDate, setSelectedDate] = useState(null); // 'YYYY-MM-DD'
+            const [newNoteText, setNewNoteText] = useState("");
+
+            // Helpers de Data
+            const getDaysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
+            const getFirstDayOfMonth = (year, month) => new Date(year, month, 1).getDay();
+
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            const daysInMonth = getDaysInMonth(year, month);
+            const firstDay = getFirstDayOfMonth(year, month);
+            const todayStr = new Date().toISOString().split('T')[0];
+
+            const handlePrevMonth = () => setCurrentDate(new Date(year, month - 1, 1));
+            const handleNextMonth = () => setCurrentDate(new Date(year, month + 1, 1));
+
+            const formatDateStr = (day) => {
+                return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            };
+
+            const handleDayClick = (day) => {
+                setSelectedDate(formatDateStr(day));
+            };
+
+            const handleAddNoteSubmit = (e) => {
+                e.preventDefault();
+                if (!newNoteText.trim() || !selectedDate) return;
+                onAddNote({
+                    date: selectedDate,
+                    text: newNoteText,
+                    completed: false
+                });
+                setNewNoteText("");
+            };
+
+            const toggleNoteCompletion = (note) => {
+                onUpdateNote(note.id, { completed: !note.completed });
+            };
+
+            // Grid render logic
+            const renderCalendarGrid = () => {
+                const days = [];
+                // Padding for days before start of month
+                for (let i = 0; i < firstDay; i++) {
+                    days.push(<div key={`empty-${i}`} className="h-24 md:h-32 bg-gray-50/50 border border-gray-100"></div>);
+                }
+                
+                // Actual days
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dateStr = formatDateStr(day);
+                    const dayNotes = notes.filter(n => n.date === dateStr);
+                    const isToday = dateStr === todayStr;
+                    const isSelected = dateStr === selectedDate;
+
+                    days.push(
+                        <div 
+                            key={day} 
+                            onClick={() => handleDayClick(day)}
+                            className={`h-24 md:h-32 border border-gray-100 p-2 cursor-pointer transition-colors relative hover:bg-indigo-50/50 flex flex-col gap-1
+                                ${isToday ? 'bg-indigo-50 border-indigo-200' : 'bg-white'}
+                                ${isSelected ? 'ring-2 ring-indigo-500 ring-inset z-10' : ''}
+                            `}
+                        >
+                            <span className={`text-sm font-semibold w-7 h-7 flex items-center justify-center rounded-full ${isToday ? 'bg-indigo-600 text-white' : 'text-gray-700'}`}>
+                                {day}
+                            </span>
+                            
+                            {/* Note Indicators */}
+                            <div className="flex-1 overflow-hidden flex flex-col gap-1 mt-1">
+                                {dayNotes.slice(0, 3).map((note, idx) => (
+                                    <div key={idx} className={`text-[10px] truncate px-1.5 py-0.5 rounded ${note.completed ? 'bg-gray-100 text-gray-400 line-through' : 'bg-blue-100 text-blue-700'}`}>
+                                        {note.text}
+                                    </div>
+                                ))}
+                                {dayNotes.length > 3 && (
+                                    <div className="text-[10px] text-gray-400 pl-1">+{dayNotes.length - 3} mais</div>
+                                )}
+                            </div>
+                        </div>
+                    );
+                }
+                return days;
+            };
+
+            const selectedDayNotes = selectedDate ? notes.filter(n => n.date === selectedDate) : [];
+
+            return (
+                <div className="space-y-6">
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+                        <div>
+                            <h1 className="text-2xl font-bold text-gray-800">Agenda e Tarefas</h1>
+                            <p className="text-gray-500">Organize seus deveres mensais.</p>
+                        </div>
+                        <div className="flex items-center gap-4 bg-white p-2 rounded-xl shadow-sm border border-gray-200">
+                            <button onClick={handlePrevMonth} className="p-2 hover:bg-gray-100 rounded-lg text-gray-600"><ChevronLeft size={20}/></button>
+                            <span className="font-bold text-gray-800 w-32 text-center capitalize">
+                                {currentDate.toLocaleString('pt-BR', { month: 'long', year: 'numeric' })}
+                            </span>
+                            <button onClick={handleNextMonth} className="p-2 hover:bg-gray-100 rounded-lg text-gray-600"><ChevronRight size={20}/></button>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col lg:flex-row gap-6">
+                        {/* Calendar Grid */}
+                        <div className="flex-1 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                            <div className="grid grid-cols-7 bg-gray-50 border-b border-gray-200">
+                                {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map(d => (
+                                    <div key={d} className="py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">{d}</div>
+                                ))}
+                            </div>
+                            <div className="grid grid-cols-7">
+                                {renderCalendarGrid()}
+                            </div>
+                        </div>
+
+                        {/* Modal/Panel for Notes */}
+                        <Modal 
+                            isOpen={!!selectedDate} 
+                            onClose={() => setSelectedDate(null)} 
+                            title={selectedDate ? `Tarefas para ${selectedDate.split('-').reverse().join('/')}` : ''}
+                        >
+                            <div className="space-y-6">
+                                {/* List */}
+                                <div className="space-y-2 max-h-[300px] overflow-y-auto">
+                                    {selectedDayNotes.length === 0 && (
+                                        <p className="text-sm text-gray-400 text-center py-4">Nenhuma anotação para este dia.</p>
+                                    )}
+                                    {selectedDayNotes.map(note => (
+                                        <div key={note.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group">
+                                            <button 
+                                                onClick={() => toggleNoteCompletion(note)} 
+                                                className={`text-gray-400 hover:text-indigo-600 transition-colors ${note.completed ? 'text-indigo-500' : ''}`}
+                                            >
+                                                {note.completed ? <CheckSquare size={20} /> : <Square size={20} />}
+                                            </button>
+                                            <span className={`flex-1 text-sm ${note.completed ? 'text-gray-400 line-through' : 'text-gray-700'}`}>
+                                                {note.text}
+                                            </span>
+                                            <button onClick={() => onDeleteNote(note.id)} className="text-gray-300 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-all">
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Add Form */}
+                                <form onSubmit={handleAddNoteSubmit} className="flex gap-2 pt-4 border-t border-gray-100">
+                                    <input 
+                                        type="text" 
+                                        placeholder="Nova tarefa..." 
+                                        className="flex-1 p-2 border border-gray-300 rounded-lg outline-none text-sm focus:border-indigo-500 transition-colors"
+                                        value={newNoteText}
+                                        onChange={e => setNewNoteText(e.target.value)}
+                                        autoFocus
+                                    />
+                                    <button type="submit" className="bg-indigo-600 text-white p-2 rounded-lg hover:bg-indigo-700">
+                                        <Plus size={20} />
+                                    </button>
+                                </form>
+                            </div>
+                        </Modal>
+                    </div>
+                </div>
+            );
+        };
+
+        const ClientsView = ({ clients, onAdd, onDelete }) => {
+            const [isModalOpen, setIsModalOpen] = useState(false);
+            const [newClient, setNewClient] = useState({ name: '', company: '', email: '', phone: '', status: 'Ativo' });
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                onAdd(newClient);
+                setIsModalOpen(false);
+                setNewClient({ name: '', company: '', email: '', phone: '', status: 'Ativo' });
+            };
+
+            return (
+                <div className="space-y-6">
+                    <div className="flex justify-between items-center">
+                        <h1 className="text-2xl font-bold text-gray-800">Clientes</h1>
+                        <Button onClick={() => setIsModalOpen(true)} icon={Plus}>Novo Cliente</Button>
+                    </div>
+
+                    <Card className="overflow-hidden p-0">
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left">
+                                <thead className="bg-gray-50 border-b border-gray-100">
+                                    <tr>
+                                        <th className="p-4 text-xs font-semibold text-gray-500 uppercase">Cliente</th>
+                                        <th className="p-4 text-xs font-semibold text-gray-500 uppercase">Contato</th>
+                                        <th className="p-4 text-xs font-semibold text-gray-500 uppercase">Status</th>
+                                        <th className="p-4 text-xs font-semibold text-gray-500 uppercase text-right">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-100">
+                                    {clients.map((client) => (
+                                        <tr key={client.id} className="hover:bg-gray-50/50 transition-colors">
+                                            <td className="p-4">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center font-bold text-sm shadow-sm">
+                                                        {client.name ? client.name.substring(0, 1).toUpperCase() : '?'}
+                                                    </div>
+                                                    <div>
+                                                        <div className="font-medium text-gray-900">{client.name || 'Sem Nome'}</div>
+                                                        <div className="text-sm text-gray-500">{client.company || 'Sem Empresa'}</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="p-4">
+                                                <div className="text-sm text-gray-900">{client.email || '-'}</div>
+                                                <div className="text-sm text-gray-500">{client.phone || '-'}</div>
+                                            </td>
+                                            <td className="p-4"><Badge type={client.status === 'Ativo' ? 'success' : 'neutral'}>{client.status || 'Indefinido'}</Badge></td>
+                                            <td className="p-4 text-right">
+                                                <button onClick={() => onDelete(client.id)} className="text-gray-400 hover:text-rose-500 transition-colors p-2 rounded-full hover:bg-rose-50"><Trash2 size={18} /></button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    {clients.length === 0 && <tr><td colSpan="4" className="p-8 text-center text-gray-500">Nenhum cliente cadastrado.</td></tr>}
+                                </tbody>
+                            </table>
+                        </div>
+                    </Card>
+
+                    <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Adicionar Novo Cliente">
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Nome Completo</label>
+                                <input required type="text" className="w-full p-2 border border-gray-300 rounded-lg outline-none" value={newClient.name} onChange={e => setNewClient({...newClient, name: e.target.value})} />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Empresa</label>
+                                <input required type="text" className="w-full p-2 border border-gray-300 rounded-lg outline-none" value={newClient.company} onChange={e => setNewClient({...newClient, company: e.target.value})} />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                    <input type="email" className="w-full p-2 border border-gray-300 rounded-lg outline-none" value={newClient.email} onChange={e => setNewClient({...newClient, email: e.target.value})} />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Telefone</label>
+                                    <input type="text" className="w-full p-2 border border-gray-300 rounded-lg outline-none" value={newClient.phone} onChange={e => setNewClient({...newClient, phone: e.target.value})} />
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                                <select className="w-full p-2 border border-gray-300 rounded-lg outline-none" value={newClient.status} onChange={e => setNewClient({...newClient, status: e.target.value})}>
+                                    <option value="Ativo">Ativo</option>
+                                    <option value="Prospect">Prospect</option>
+                                    <option value="Inativo">Inativo</option>
+                                </select>
+                            </div>
+                            <div className="pt-4 flex justify-end gap-3">
+                                <Button type="button" variant="secondary" onClick={() => setIsModalOpen(false)}>Cancelar</Button>
+                                <Button type="submit">Salvar Cliente</Button>
+                            </div>
+                        </form>
+                    </Modal>
+                </div>
+            );
+        };
+
+        const ProjectsView = ({ projects, clients, onAdd, onUpdate, onDelete }) => {
+            const [isModalOpen, setIsModalOpen] = useState(false);
+            const [editingId, setEditingId] = useState(null);
+            
+            const initialProjectState = { 
+                name: '', clientId: '', status: 'Em Andamento', 
+                githubUrl: '', docsUrl: '', contractUrl: '', 
+                implementationValue: '', monthlyValue: '', description: '' 
+            };
+            const [currentProject, setCurrentProject] = useState(initialProjectState);
+
+            const handleOpenModal = (project = null) => {
+                if (project) {
+                    setEditingId(project.id);
+                    setCurrentProject({
+                        ...project,
+                        clientId: project.clientId || '', // Garantir string
+                    });
+                } else {
+                    setEditingId(null);
+                    setCurrentProject(initialProjectState);
+                }
+                setIsModalOpen(true);
+            };
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                const projectData = {
+                    ...currentProject,
+                    implementationValue: parseFloat(currentProject.implementationValue) || 0,
+                    monthlyValue: parseFloat(currentProject.monthlyValue) || 0
+                };
+
+                if (editingId) {
+                    onUpdate(editingId, projectData);
+                } else {
+                    onAdd(projectData);
+                }
+                setIsModalOpen(false);
+            };
+
+            return (
+                <div className="space-y-6">
+                    <div className="flex justify-between items-center">
+                        <h1 className="text-2xl font-bold text-gray-800">Projetos & Tech</h1>
+                        <Button onClick={() => handleOpenModal()} icon={Plus}>Novo Projeto</Button>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                        {projects.map((project) => {
+                            const client = clients.find(c => c.id === project.clientId);
+                            return (
+                                <div key={project.id} className="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col hover:shadow-md transition-shadow relative">
+                                    <div className="p-6 flex-1">
+                                        <div className="flex justify-between items-start mb-4">
+                                            <Badge type="tech">{client?.company || 'Sem Cliente'}</Badge>
+                                            <Badge type={project.status === 'Concluído' ? 'success' : 'info'}>{project.status}</Badge>
+                                        </div>
+                                        <h3 className="text-lg font-bold text-gray-900 mb-1">{project.name}</h3>
+                                        <p className="text-sm text-gray-500 line-clamp-2 mb-4">{project.description || 'Sem descrição.'}</p>
+                                        
+                                        <div className="space-y-2 mt-4">
+                                            {project.githubUrl && (
+                                                <a href={project.githubUrl} target="_blank" className="flex items-center gap-3 text-xs text-gray-600 hover:text-indigo-600 group p-2 rounded-lg hover:bg-indigo-50 border border-gray-100">
+                                                    <Github size={16} /> <span>GitHub Repo</span> <ExternalLink size={12} className="ml-auto opacity-0 group-hover:opacity-100" />
+                                                </a>
+                                            )}
+                                            {project.docsUrl && (
+                                                <a href={project.docsUrl} target="_blank" className="flex items-center gap-3 text-xs text-gray-600 hover:text-amber-600 group p-2 rounded-lg hover:bg-amber-50 border border-gray-100">
+                                                    <FileText size={16} /> <span>Documentação</span> <ExternalLink size={12} className="ml-auto opacity-0 group-hover:opacity-100" />
+                                                </a>
+                                            )}
+                                            {project.contractUrl && (
+                                                <a href={project.contractUrl} target="_blank" className="flex items-center gap-3 text-xs text-gray-600 hover:text-emerald-600 group p-2 rounded-lg hover:bg-emerald-50 border border-gray-100">
+                                                    <ScrollText size={16} /> <span>Contrato</span> <ExternalLink size={12} className="ml-auto opacity-0 group-hover:opacity-100" />
+                                                </a>
+                                            )}
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="p-4 bg-gray-50 border-t border-gray-100 rounded-b-xl">
+                                        <div className="flex justify-between items-center mb-1">
+                                            <span className="text-xs text-gray-500">Implementação:</span>
+                                            <span className="text-sm font-bold text-gray-900">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(project.implementationValue || 0)}</span>
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-xs text-gray-500">Mensalidade:</span>
+                                            <span className="text-sm font-bold text-emerald-600">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(project.monthlyValue || 0)}/mês</span>
+                                        </div>
+                                        <div className="mt-3 flex justify-end gap-2 border-t border-gray-200 pt-2">
+                                            <button onClick={() => handleOpenModal(project)} className="text-gray-400 hover:text-indigo-600 p-1 flex items-center gap-1 text-xs">
+                                                <Edit2 size={16} /> Editar
+                                            </button>
+                                            <button onClick={() => onDelete(project.id)} className="text-gray-400 hover:text-rose-600 p-1 flex items-center gap-1 text-xs">
+                                                <Trash2 size={16} /> Deletar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingId ? "Editar Projeto" : "Novo Projeto"}>
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Nome do Projeto</label>
+                                <input required type="text" className="w-full p-2 border border-gray-300 rounded-lg outline-none" value={currentProject.name} onChange={e => setCurrentProject({...currentProject, name: e.target.value})} />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Cliente</label>
+                                <select required className="w-full p-2 border border-gray-300 rounded-lg outline-none" value={currentProject.clientId} onChange={e => setCurrentProject({...currentProject, clientId: e.target.value})}>
+                                    <option value="">Selecione um cliente...</option>
+                                    {clients.map(c => <option key={c.id} value={c.id}>{c.name} - {c.company}</option>)}
+                                </select>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Implementação (R$)</label>
+                                    <input type="number" className="w-full p-2 border border-gray-300 rounded-lg outline-none" value={currentProject.implementationValue} onChange={e => setCurrentProject({...currentProject, implementationValue: e.target.value})} />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Mensalidade (R$)</label>
+                                    <input type="number" className="w-full p-2 border border-gray-300 rounded-lg outline-none" value={currentProject.monthlyValue} onChange={e => setCurrentProject({...currentProject, monthlyValue: e.target.value})} />
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Descrição Curta</label>
+                                <textarea className="w-full p-2 border border-gray-300 rounded-lg outline-none" rows="2" value={currentProject.description} onChange={e => setCurrentProject({...currentProject, description: e.target.value})} />
+                            </div>
+                             <div className="space-y-3 pt-2">
+                                <p className="text-xs font-semibold text-gray-500 uppercase">Links e Recursos</p>
+                                <div className="grid grid-cols-1 gap-3">
+                                    <input type="url" placeholder="GitHub URL" className="w-full p-2 border border-gray-300 rounded-lg outline-none text-sm" value={currentProject.githubUrl} onChange={e => setCurrentProject({...currentProject, githubUrl: e.target.value})} />
+                                    <input type="url" placeholder="Docs URL (Notion/Drive)" className="w-full p-2 border border-gray-300 rounded-lg outline-none text-sm" value={currentProject.docsUrl} onChange={e => setCurrentProject({...currentProject, docsUrl: e.target.value})} />
+                                    <input type="url" placeholder="Contrato URL" className="w-full p-2 border border-gray-300 rounded-lg outline-none text-sm" value={currentProject.contractUrl} onChange={e => setCurrentProject({...currentProject, contractUrl: e.target.value})} />
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                                <select className="w-full p-2 border border-gray-300 rounded-lg outline-none" value={currentProject.status} onChange={e => setCurrentProject({...currentProject, status: e.target.value})}>
+                                    <option value="Planejamento">Planejamento</option>
+                                    <option value="Em Andamento">Em Andamento</option>
+                                    <option value="Pausado">Pausado</option>
+                                    <option value="Concluído">Concluído</option>
+                                </select>
+                            </div>
+                            <div className="pt-4 flex justify-end gap-3">
+                                <Button type="button" variant="secondary" onClick={() => setIsModalOpen(false)}>Cancelar</Button>
+                                <Button type="submit">Salvar Projeto</Button>
+                            </div>
+                        </form>
+                    </Modal>
+                </div>
+            );
+        };
+
+        const FinancialView = ({ projects, expenses, onAddExpense, onUpdateExpense, onDeleteExpense }) => {
+            // Estado para o Filtro de Data: YYYY-MM
+            const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7));
+            const [newExpense, setNewExpense] = useState({ description: '', amount: '', category: 'Ferramentas', isFixed: false });
+
+            // Helpers de Data
+            const isDateInSelectedMonth = (dateObj) => {
+                if (!dateObj) return false;
+                const [year, month] = selectedMonth.split('-');
+                return dateObj.getFullYear() === parseInt(year) && (dateObj.getMonth() + 1) === parseInt(month);
+            };
+
+            const isDateBeforeOrInSelectedMonth = (dateObj) => {
+                if (!dateObj) return false;
+                const [year, month] = selectedMonth.split('-');
+                const selected = new Date(parseInt(year), parseInt(month) - 1, 1);
+                const target = new Date(dateObj.getFullYear(), dateObj.getMonth(), 1);
+                return target <= selected;
+            };
+
+            // Cálculo das métricas baseadas no mês selecionado
+            const monthlyMetrics = useMemo(() => {
+                // 1. Receita de Implementação (Projetos criados NESTE mês)
+                const implementationRevenue = projects
+                    .filter(p => {
+                        const pDate = p.createdAt?.toDate ? p.createdAt.toDate() : new Date(); 
+                        return isDateInSelectedMonth(pDate);
+                    })
+                    .reduce((acc, curr) => acc + (parseFloat(curr.implementationValue) || 0), 0);
+
+                // 2. Receita Recorrente/Mensalidades (Projetos ativos criados ATÉ este mês)
+                const recurringRevenue = projects
+                    .filter(p => {
+                        const isActive = p.status === 'Em Andamento' || p.status === 'Concluído';
+                        const pDate = p.createdAt?.toDate ? p.createdAt.toDate() : new Date();
+                        // Assume que projetos antigos ativos continuam pagando mensalidade
+                        return isActive && isDateBeforeOrInSelectedMonth(pDate);
+                    })
+                    .reduce((acc, curr) => acc + (parseFloat(curr.monthlyValue) || 0), 0);
+
+                // 3. Despesas (Registradas NESTE mês OU marcadas como FIXAS)
+                const periodExpenses = expenses
+                    .filter(e => {
+                        if (e.isFixed) return true; // Custo Fixo aparece sempre
+                        const eDate = e.date ? new Date(e.date) : (e.createdAt?.toDate ? e.createdAt.toDate() : new Date());
+                        return isDateInSelectedMonth(eDate);
+                    })
+                    .reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
+
+                const totalRevenue = implementationRevenue + recurringRevenue;
+                
+                return {
+                    implementation: implementationRevenue,
+                    recurring: recurringRevenue,
+                    totalRevenue: totalRevenue,
+                    expenses: periodExpenses,
+                    profit: totalRevenue - periodExpenses
+                };
+            }, [projects, expenses, selectedMonth]);
+
+            // Lógica do gráfico (barras simples com CSS)
+            const maxVal = Math.max(monthlyMetrics.totalRevenue, monthlyMetrics.expenses, 1);
+            const revenuePct = (monthlyMetrics.totalRevenue / maxVal) * 100;
+            const expensePct = (monthlyMetrics.expenses / maxVal) * 100;
+
+            const handleExpenseSubmit = (e) => {
+                e.preventDefault();
+                // Salva a data atual como string ISO para facilitar filtro
+                onAddExpense({
+                    ...newExpense,
+                    amount: parseFloat(newExpense.amount) || 0,
+                    date: new Date().toISOString()
+                });
+                setNewExpense({ description: '', amount: '', category: 'Ferramentas', isFixed: false });
+            };
+
+            const toggleFixed = (id, currentStatus) => {
+                onUpdateExpense(id, { isFixed: !currentStatus });
+            };
+
+            return (
+                <div className="space-y-6">
+                    <header className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div>
+                            <h1 className="text-2xl font-bold text-gray-800">Faturamento e Despesas</h1>
+                            <p className="text-gray-500">Controle de fluxo de caixa mensal.</p>
+                        </div>
+                        <div className="bg-white p-2 rounded-lg shadow-sm border border-gray-200 flex items-center gap-2">
+                            <Filter size={18} className="text-gray-400 ml-2" />
+                            <input 
+                                type="month" 
+                                value={selectedMonth} 
+                                onChange={(e) => setSelectedMonth(e.target.value)}
+                                className="outline-none text-gray-700 font-medium bg-transparent"
+                            />
+                        </div>
+                    </header>
+
+                    {/* Gráfico Comparativo e Resumo */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <Card className="col-span-1 md:col-span-2">
+                             <h3 className="font-semibold text-gray-800 mb-6 flex items-center gap-2">
+                                <Calendar size={18} className="text-indigo-500"/> 
+                                Resumo de {selectedMonth.split('-').reverse().join('/')}
+                             </h3>
+                             <div className="space-y-6">
+                                {/* Barra Receita */}
+                                <div>
+                                    <div className="flex justify-between text-sm mb-1">
+                                        <span className="font-medium text-gray-600 flex items-center gap-2">
+                                            <TrendingUp size={16} className="text-emerald-500"/> 
+                                            Entradas 
+                                            <span className="text-xs text-gray-400 font-normal">
+                                                (Impl: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(monthlyMetrics.implementation)} + 
+                                                Mensal: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(monthlyMetrics.recurring)})
+                                            </span>
+                                        </span>
+                                        <span className="font-bold text-emerald-600">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(monthlyMetrics.totalRevenue)}</span>
+                                    </div>
+                                    <div className="h-4 w-full bg-gray-100 rounded-full overflow-hidden">
+                                        <div className="h-full bg-emerald-500 rounded-full transition-all duration-500" style={{ width: `${revenuePct}%` }}></div>
+                                    </div>
+                                </div>
+                                {/* Barra Despesa */}
+                                <div>
+                                    <div className="flex justify-between text-sm mb-1">
+                                        <span className="font-medium text-gray-600 flex items-center gap-2"><TrendingDown size={16} className="text-rose-500"/> Saídas</span>
+                                        <span className="font-bold text-rose-600">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(monthlyMetrics.expenses)}</span>
+                                    </div>
+                                    <div className="h-4 w-full bg-gray-100 rounded-full overflow-hidden">
+                                        <div className="h-full bg-rose-500 rounded-full transition-all duration-500" style={{ width: `${expensePct}%` }}></div>
+                                    </div>
+                                </div>
+                             </div>
+                        </Card>
+
+                        <Card className={`border-t-4 ${monthlyMetrics.profit >= 0 ? 'border-emerald-500' : 'border-rose-500'}`}>
+                            <div className="flex flex-col justify-center h-full">
+                                <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">Resultado Líquido</p>
+                                <h3 className={`text-3xl font-bold mt-2 ${monthlyMetrics.profit >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+                                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(monthlyMetrics.profit)}
+                                </h3>
+                                <p className="text-xs text-gray-400 mt-2">Balanço do Mês</p>
+                            </div>
+                        </Card>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        {/* Coluna Receitas (Projetos Ativos) */}
+                        <Card>
+                            <h3 className="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                                <Briefcase size={18} className="text-indigo-500"/> Detalhamento de Receita
+                            </h3>
+                            <div className="overflow-x-auto max-h-60 overflow-y-auto">
+                                <table className="w-full text-sm text-left">
+                                    <thead className="bg-gray-50 text-gray-500">
+                                        <tr>
+                                            <th className="p-3 font-medium">Origem</th>
+                                            <th className="p-3 font-medium text-right">Valor</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-100">
+                                        {/* Listar Projetos com Implementação neste mês */}
+                                        {projects.filter(p => isDateInSelectedMonth(p.createdAt?.toDate ? p.createdAt.toDate() : new Date())).map(p => (
+                                            <tr key={`impl-${p.id}`}>
+                                                <td className="p-3 font-medium text-gray-700">
+                                                    {p.name} <Badge type="info">Implementação</Badge>
+                                                </td>
+                                                <td className="p-3 text-right text-indigo-600 font-semibold">
+                                                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(p.implementationValue)}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                        
+                                        {/* Listar Projetos com Mensalidade neste mês */}
+                                        {projects.filter(p => {
+                                            const isActive = p.status === 'Em Andamento' || p.status === 'Concluído';
+                                            const pDate = p.createdAt?.toDate ? p.createdAt.toDate() : new Date();
+                                            return isActive && isDateBeforeOrInSelectedMonth(pDate);
+                                        }).map(p => (
+                                            <tr key={`mrr-${p.id}`}>
+                                                <td className="p-3 font-medium text-gray-700">
+                                                    {p.name} <span className="text-xs text-gray-400">(Mensalidade)</span>
+                                                </td>
+                                                <td className="p-3 text-right text-emerald-600 font-semibold">
+                                                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(p.monthlyValue)}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </Card>
+
+                        {/* Coluna Despesas */}
+                        <Card>
+                             <h3 className="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                                <Receipt size={18} className="text-rose-500"/> Contas a Pagar ({selectedMonth})
+                            </h3>
+                            
+                            {/* Formulário Rápido com Checkbox Fixo */}
+                            <form onSubmit={handleExpenseSubmit} className="flex gap-2 mb-6 bg-gray-50 p-3 rounded-lg flex-wrap items-end">
+                                <div className="flex-1 min-w-[200px]">
+                                    <label className="text-xs text-gray-500 ml-1">Descrição</label>
+                                    <input required type="text" placeholder="Ex: Servidor" className="w-full p-2 border border-gray-200 rounded text-sm outline-none" value={newExpense.description} onChange={e => setNewExpense({...newExpense, description: e.target.value})} />
+                                </div>
+                                <div className="w-24">
+                                     <label className="text-xs text-gray-500 ml-1">Valor</label>
+                                    <input required type="number" placeholder="R$" className="w-full p-2 border border-gray-200 rounded text-sm outline-none" value={newExpense.amount} onChange={e => setNewExpense({...newExpense, amount: e.target.value})} />
+                                </div>
+                                <div className="flex items-center gap-2 h-[38px] px-2 bg-white border border-gray-200 rounded">
+                                    <input 
+                                        type="checkbox" 
+                                        id="newExpenseFixed" 
+                                        checked={newExpense.isFixed} 
+                                        onChange={e => setNewExpense({...newExpense, isFixed: e.target.checked})}
+                                        className="w-4 h-4 text-indigo-600 rounded"
+                                    />
+                                    <label htmlFor="newExpenseFixed" className="text-sm text-gray-600 cursor-pointer select-none">Fixo</label>
+                                </div>
+                                <button type="submit" className="h-[38px] px-4 bg-indigo-600 text-white rounded hover:bg-indigo-700 flex items-center justify-center"><Plus size={18} /></button>
+                            </form>
+
+                            <div className="overflow-x-auto max-h-60 overflow-y-auto">
+                                <table className="w-full text-sm text-left">
+                                    <thead className="bg-gray-50 text-gray-500">
+                                        <tr>
+                                            <th className="p-3 font-medium">Descrição</th>
+                                            <th className="p-3 font-medium text-center">Fixo</th>
+                                            <th className="p-3 font-medium text-right">Valor</th>
+                                            <th className="p-3 w-8"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-100">
+                                        {expenses.filter(e => {
+                                             if (e.isFixed) return true; // Mostra fixos sempre
+                                             const eDate = e.date ? new Date(e.date) : (e.createdAt?.toDate ? e.createdAt.toDate() : new Date());
+                                             return isDateInSelectedMonth(eDate);
+                                        }).map(expense => (
+                                            <tr key={expense.id} className="group">
+                                                <td className="p-3 text-gray-700">{expense.description}</td>
+                                                <td className="p-3 text-center">
+                                                    <input 
+                                                        type="checkbox" 
+                                                        checked={expense.isFixed || false} 
+                                                        onChange={() => toggleFixed(expense.id, expense.isFixed)}
+                                                        className="w-4 h-4 text-indigo-600 rounded cursor-pointer accent-indigo-600"
+                                                        title="Se desmarcar, este item sumirá dos outros meses"
+                                                    />
+                                                </td>
+                                                <td className="p-3 text-right text-rose-600 font-semibold">
+                                                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(expense.amount)}
+                                                </td>
+                                                <td className="p-3 text-right w-8">
+                                                    <button onClick={() => onDeleteExpense(expense.id)} className="text-gray-300 hover:text-rose-500"><Trash2 size={14}/></button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                         {expenses.filter(e => {
+                                             if (e.isFixed) return true;
+                                             const eDate = e.date ? new Date(e.date) : (e.createdAt?.toDate ? e.createdAt.toDate() : new Date());
+                                             return isDateInSelectedMonth(eDate);
+                                        }).length === 0 && (
+                                            <tr><td colSpan="4" className="p-4 text-center text-gray-400">Nenhuma despesa neste mês.</td></tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </Card>
+                    </div>
+                </div>
+            );
+        };
+
+        const PrattaTechSystem = () => {
+            const [user, setUser] = useState(null);
+            const [currentView, setCurrentView] = useState('dashboard');
+            const [clients, setClients] = useState([]);
+            const [projects, setProjects] = useState([]);
+            const [expenses, setExpenses] = useState([]); 
+            const [notes, setNotes] = useState([]); // Calendar notes
+            const [isLoading, setIsLoading] = useState(true);
+
+            useEffect(() => {
+                const unsubscribe = onAuthStateChanged(auth, (u) => {
+                    setUser(u);
+                    setIsLoading(false);
+                });
+                return () => unsubscribe();
+            }, []);
+
+            useEffect(() => {
+                if (!user) return;
+
+                const clientsRef = collection(db, 'artifacts', appId, 'users', user.uid, 'clients');
+                const projectsRef = collection(db, 'artifacts', appId, 'users', user.uid, 'projects');
+                const expensesRef = collection(db, 'artifacts', appId, 'users', user.uid, 'expenses');
+                const notesRef = collection(db, 'artifacts', appId, 'users', user.uid, 'calendar_notes');
+
+                const unsubClients = onSnapshot(query(clientsRef, orderBy('createdAt', 'desc')), (s) => setClients(s.docs.map(d => ({ id: d.id, ...d.data() }))));
+                const unsubProjects = onSnapshot(query(projectsRef, orderBy('createdAt', 'desc')), (s) => setProjects(s.docs.map(d => ({ id: d.id, ...d.data() }))));
+                const unsubExpenses = onSnapshot(query(expensesRef, orderBy('createdAt', 'desc')), (s) => setExpenses(s.docs.map(d => ({ id: d.id, ...d.data() }))));
+                const unsubNotes = onSnapshot(query(notesRef, orderBy('createdAt', 'asc')), (s) => setNotes(s.docs.map(d => ({ id: d.id, ...d.data() }))));
+
+                return () => { unsubClients(); unsubProjects(); unsubExpenses(); unsubNotes(); };
+            }, [user]);
+
+            // CRUD Clients
+            const handleAddClient = async (data) => { if (!user) return; await addDoc(collection(db, 'artifacts', appId, 'users', user.uid, 'clients'), { ...data, createdAt: serverTimestamp() }); };
+            const handleDeleteClient = async (id) => { if (!user) return; if (confirm('Tem certeza?')) await deleteDoc(doc(db, 'artifacts', appId, 'users', user.uid, 'clients', id)); };
+            
+            // CRUD Projects
+            const handleAddProject = async (data) => { if (!user) return; await addDoc(collection(db, 'artifacts', appId, 'users', user.uid, 'projects'), { ...data, createdAt: serverTimestamp() }); };
+            const handleUpdateProject = async (id, data) => { if (!user) return; await updateDoc(doc(db, 'artifacts', appId, 'users', user.uid, 'projects', id), data); };
+            const handleDeleteProject = async (id) => { if (!user) return; if (confirm('Deletar projeto?')) await deleteDoc(doc(db, 'artifacts', appId, 'users', user.uid, 'projects', id)); };
+
+            // CRUD Expenses
+            const handleAddExpense = async (data) => { if (!user) return; await addDoc(collection(db, 'artifacts', appId, 'users', user.uid, 'expenses'), { ...data, createdAt: serverTimestamp() }); };
+            const handleUpdateExpense = async (id, data) => { if (!user) return; await updateDoc(doc(db, 'artifacts', appId, 'users', user.uid, 'expenses', id), data); };
+            const handleDeleteExpense = async (id) => { if (!user) return; await deleteDoc(doc(db, 'artifacts', appId, 'users', user.uid, 'expenses', id)); };
+            
+            // CRUD Notes
+            const handleAddNote = async (data) => { if (!user) return; await addDoc(collection(db, 'artifacts', appId, 'users', user.uid, 'calendar_notes'), { ...data, createdAt: serverTimestamp() }); };
+            const handleUpdateNote = async (id, data) => { if (!user) return; await updateDoc(doc(db, 'artifacts', appId, 'users', user.uid, 'calendar_notes', id), data); };
+            const handleDeleteNote = async (id) => { if (!user) return; await deleteDoc(doc(db, 'artifacts', appId, 'users', user.uid, 'calendar_notes', id)); };
+
+            const handleLogout = () => signOut(auth);
+
+            if (isLoading) return <div className="min-h-screen flex items-center justify-center bg-gray-50"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div></div>;
+            if (!user) return <LoginView />;
+
+            const NavItem = ({ id, label, icon: Icon }) => (
+                <button onClick={() => setCurrentView(id)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors mb-1 ${currentView === id ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200' : 'text-gray-600 hover:bg-white hover:text-indigo-600'}`}>
+                    <Icon size={20} /> <span className="font-medium">{label}</span>
+                </button>
+            );
+
+            return (
+                <div className="flex h-screen bg-[#F3F4F6] font-sans">
+                    <aside className="w-64 bg-[#F9FAFB] border-r border-gray-200 flex flex-col hidden md:flex">
+                        <div className="p-6">
+                            <div className="flex items-center gap-2 mb-8"><div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center"><Code size={20} className="text-white" /></div><span className="text-xl font-bold text-gray-800 tracking-tight">Pratta<span className="text-indigo-600">Manager</span></span></div>
+                            <nav>
+                                <p className="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Principal</p>
+                                <NavItem id="dashboard" label="Dashboard" icon={LayoutDashboard} />
+                                <NavItem id="calendar" label="Agenda" icon={Calendar} />
+                                <NavItem id="clients" label="Clientes" icon={Users} />
+                                <NavItem id="projects" label="Projetos & Tech" icon={Briefcase} />
+                                <p className="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 mt-6">Financeiro</p>
+                                <NavItem id="financial" label="Faturamento" icon={Receipt} />
+                                <p className="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 mt-6">Sistema</p>
+                                <NavItem id="settings" label="Configurações" icon={Settings} />
+                            </nav>
+                        </div>
+                        <div className="mt-auto p-6 border-t border-gray-200"><button onClick={handleLogout} className="flex items-center gap-3 text-gray-500 hover:text-rose-600 transition-colors w-full"><LogOut size={20} /><span className="text-sm font-medium">Sair do Sistema</span></button></div>
+                    </aside>
+                    <main className="flex-1 overflow-y-auto">
+                        <div className="md:hidden bg-white p-4 border-b border-gray-200 flex justify-between items-center sticky top-0 z-10"><span className="font-bold text-gray-800">PrattaTech</span><button onClick={handleLogout} className="p-2 text-gray-600"><LogOut size={20}/></button></div>
+                        <div className="p-6 md:p-10 max-w-7xl mx-auto">
+                            {currentView === 'clients' ? <ClientsView clients={clients} onAdd={handleAddClient} onDelete={handleDeleteClient} /> :
+                             currentView === 'projects' ? <ProjectsView projects={projects} clients={clients} onAdd={handleAddProject} onUpdate={handleUpdateProject} onDelete={handleDeleteProject} /> :
+                             currentView === 'calendar' ? <CalendarView notes={notes} onAddNote={handleAddNote} onUpdateNote={handleUpdateNote} onDeleteNote={handleDeleteNote} /> :
+                             currentView === 'dashboard' ? <DashboardView clients={clients} projects={projects} /> :
+                             currentView === 'financial' ? <FinancialView projects={projects} expenses={expenses} onAddExpense={handleAddExpense} onUpdateExpense={handleUpdateExpense} onDeleteExpense={handleDeleteExpense} /> :
+                             <div className="flex flex-col items-center justify-center h-[50vh] text-center"><div className="bg-white p-6 rounded-full shadow-sm mb-4"><Settings size={48} className="text-gray-300" /></div><h2 className="text-xl font-bold text-gray-800">Configurações</h2><p className="text-gray-500 max-w-md mt-2">Módulo em desenvolvimento.</p></div>
+                            }
+                        </div>
+                    </main>
+                </div>
+            );
+        };
+
+        const root = createRoot(document.getElementById('root'));
+        root.render(<PrattaTechSystem />);
     </script>
 </body>
 </html>
